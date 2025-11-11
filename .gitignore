@@ -1,0 +1,7 @@
+# Node / React
+node_modules/
+dist/
+build/
+.cache/
+.next/
+out/
