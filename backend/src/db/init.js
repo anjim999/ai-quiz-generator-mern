@@ -1,4 +1,4 @@
-import { query } from "./pool.js";
+import { queryWithRetry } from "./pool.js";
 
 export async function initDb() {
   const schema = `
@@ -38,9 +38,12 @@ export async function initDb() {
 
   try {
     console.log("🛠️ Applying DB schema...");
-    await query(schema);
+    // Use retry wrapper for init since cloud DBs sometimes drop connections during cold starts
+    await queryWithRetry(schema, [], 3, 200);
     console.log("✅ Database ready");
   } catch (err) {
-    console.error("❌ DB init error:", err);
+    // Re-throw after logging so callers (startup) can decide whether to exit
+    console.error("❌ DB init error:", err && err.stack ? err.stack : err);
+    throw err;
   }
 }
