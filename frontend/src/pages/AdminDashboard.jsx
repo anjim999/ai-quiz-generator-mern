@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../api/axiosClient";
 import { useAuth } from "../context/AuthContext";
 import { FaUsers, FaChartLine, FaListOl } from "react-icons/fa";
-
+import Navbar from "../components/Navbar";
 export default function AdminDashboard() {
   const { auth } = useAuth();
   const [loading, setLoading] = useState(true);
@@ -37,12 +37,15 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
+    <>
+    <Navbar />
+    
+    <div className="min-h-screen bg-gray-100 p-8 mt-9">
       {/* Header */}
       <header className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-gray-800">Admin Dashboard</h1>
         <span className="font-medium text-gray-700">
-          Logged in as: <b>{auth?.user?.email}</b>
+          {/* Logged in as: <b>{auth?.user?.email}</b> */}
         </span>
       </header>
 
@@ -117,6 +120,7 @@ export default function AdminDashboard() {
         />
       )}
     </div>
+    </>
   );
 }
 
