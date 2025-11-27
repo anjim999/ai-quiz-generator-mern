@@ -5,4 +5,8 @@ build/
 .cache/
 .next/
 out/
+
+# Env files
 .env
+backend/.env
+frontend/.env
