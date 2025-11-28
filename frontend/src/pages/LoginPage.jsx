@@ -114,7 +114,7 @@ export default function LoginPage() {
 
             setTimeout(() => {
               if (user.role === "admin") navigate("/admin");
-              else navigate("/products");
+              else navigate("/");
             }, 1500);
           } catch (err) {
             const backendMsg = err?.response?.data?.message;
