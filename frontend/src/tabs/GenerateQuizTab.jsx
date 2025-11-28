@@ -29,15 +29,12 @@ export default function GenerateQuizTab() {
       return;
     }
 
-    // Extract title robustly using URL API
     let title;
     try {
       const u = new URL(trimmed);
-      // Prefer path segment after /wiki/, otherwise fallback to ?title=
       if (u.pathname.startsWith("/wiki/")) {
         title = u.pathname.split("/wiki/")[1];
       } else {
-        // fallback for URLs like /w/index.php?title=Foo
         title = u.searchParams.get("title");
       }
       if (!title) throw new Error("no title");
@@ -46,7 +43,6 @@ export default function GenerateQuizTab() {
       return;
     }
 
-    // Validate existence on Wikipedia
     try {
       const encodedTitle = encodeURIComponent(title);
       const check = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodedTitle}`);
@@ -68,14 +64,12 @@ export default function GenerateQuizTab() {
     setData(null);
 
     try {
-      // If generateQuiz signature is generateQuiz(url, hideAnswersFlag, count)
-      // pass hideAnswers state instead of hardcoded false if that's intended.
       const res = await generateQuiz(trimmed, hideAnswers, count);
       setData(res);
       localStorage.setItem("activeQuiz", JSON.stringify(res));
     } catch (err) {
       console.error("Quiz generation failed:", err);
-      alert(`Quiz generation failed: ${err.message}`);
+      alert("Quiz generation failed");
     } finally {
       setLoading(false);
     }

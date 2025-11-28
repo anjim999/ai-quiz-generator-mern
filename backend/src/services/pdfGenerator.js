@@ -1,10 +1,7 @@
 import PDFDocument from "pdfkit";
 import { PassThrough } from "stream";
 
-/**
- * Streams a PDF (Content-Disposition as attachment set by controller).
- * TC: O(Q) | SC: O(1) (streaming)
- */
+
 export function buildExamPdf({ orgTitle, user, quizTitle, quiz, durationStr }) {
   const doc = new PDFDocument({ size: "A4", margin: 56 });
   const stream = new PassThrough();

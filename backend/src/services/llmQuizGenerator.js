@@ -8,25 +8,17 @@ const genAI = process.env.GEMINI_API_KEY
   ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
   : null;
 
-/**
- * Try to extract JSON from an LLM text response.
- * - Looks for the first top-level "{" ... "}" block.
- * - Sanitizes smart quotes and trailing commas.
- * - Tries a few fallback parsing heuristics.
- */
+
 function extractJson(text) {
   if (typeof text !== "string") {
     throw new Error("LLM returned non-string output");
   }
 
-  // quick sanitize: convert “smart quotes” to normal ones
   let t = text.replace(/[“”]/g, '"').replace(/[‘’]/g, "'");
 
-  // Find the first top-level JSON object by locating first '{' and matching braces to the end.
   const firstBrace = t.indexOf("{");
   if (firstBrace === -1) throw new Error("LLM returned unexpected format (no JSON object found)");
 
-  // Attempt to find matching closing brace for the first object (simple stack)
   let stack = 0;
   let endIndex = -1;
   for (let i = firstBrace; i < t.length; i++) {
@@ -42,7 +34,6 @@ function extractJson(text) {
   }
 
   if (endIndex === -1) {
-    // fallback: try regex (less safe)
     const regexMatch = t.match(/\{[\s\S]*\}/);
     if (!regexMatch) {
       throw new Error("LLM returned unexpected format (could not locate closing brace)");
@@ -52,19 +43,15 @@ function extractJson(text) {
     t = t.slice(firstBrace, endIndex + 1);
   }
 
-  // Remove trailing commas in objects/arrays (common LLM quirk)
   t = t.replace(/,\s*([}\]])/g, "$1");
 
-  // Attempt parse; if fails, try to repair some common issues
   try {
     return JSON.parse(t);
   } catch (err) {
-    // final repair attempt: remove control characters and weird non-utf8
     const cleaned = t.replace(/[\u0000-\u001F]+/g, "");
     try {
       return JSON.parse(cleaned);
     } catch (err2) {
-      // give caller the raw text in the error for debugging
       const e = new Error("LLM returned unexpected format (JSON.parse failed)");
       e.raw = text;
       throw e;
@@ -72,13 +59,9 @@ function extractJson(text) {
   }
 }
 
-/**
- * Generate quiz using Gemini
- */
 export async function generateQuizPayload({ url, title, article_text, sections, count = 10 }) {
-  // If Gemini key missing → fallback
   if (!genAI || !process.env.GEMINI_API_KEY) {
-    console.log("⚠️ Gemini key missing — using fallback quiz");
+    console.log("Gemini key missing — using fallback quiz");
     return fallbackQuiz(url, title, article_text, sections);
   }
 
@@ -116,17 +99,14 @@ Only output JSON. No commentary. Strictly JSON object only.
 
   try {
     const first = await model.generateContent(basePrompt(count));
-    // IMPORTANT: await the .text() to get the actual string
     const firstText = await first.response.text();
 
-    // Useful debug log (trim long output)
     console.log("LLM firstText (trim):", firstText.slice(0, 500));
 
     let parsed;
     try {
       parsed = extractJson(firstText);
     } catch (parseErr) {
-      // If parsing failed, log the raw output for debugging and rethrow to fallback
       console.error("Failed to parse first LLM output:", parseErr.message);
       console.error("Raw LLM output (firstText):", firstText.slice(0, 2000));
       throw parseErr;
@@ -194,7 +174,7 @@ Only output JSON. No commentary. Strictly JSON object only.
     };
 
   } catch (err) {
-    console.error("❌ Gemini error — using fallback", err && err.message ? err.message : err);
+    console.error("Gemini error — using fallback", err && err.message ? err.message : err);
     // If parsing failed, include the raw LLM output for debugging in logs only
     if (err.raw) console.error("Raw LLM output (from extractJson):", String(err.raw).slice(0, 2000));
     return fallbackQuiz(url, title, article_text, sections);

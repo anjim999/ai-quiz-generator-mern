@@ -17,13 +17,11 @@ export default function App() {
       <AuthProvider>
 
         <Routes>
-          {/* Public routes */}
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
 
-          {/* User routes (any logged-in user) */}
           <Route
             path="/dashboard"
             element={
@@ -43,7 +41,6 @@ export default function App() {
             }
           />
 
-          {/* Management / Admin-only */}
           <Route
             path="/admin"
             element={

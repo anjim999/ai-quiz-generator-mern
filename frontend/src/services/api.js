@@ -19,7 +19,6 @@ function authHeaders(extra = {}) {
     : { ...extra };
 }
 
-// Exported helper for UI components to attach auth headers to fetch requests
 export { authHeaders };
 
 export async function generateQuiz(url, forceRefresh = false, count = 10) {

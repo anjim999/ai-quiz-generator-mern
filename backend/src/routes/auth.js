@@ -11,7 +11,6 @@ import { OAuth2Client } from 'google-auth-library';
 
 const router = express.Router();
 
-// ✅ Google OAuth client
 const googleClient = GOOGLE_CLIENT_ID ? new OAuth2Client(GOOGLE_CLIENT_ID) : null;
 
 const validate = (rules) => [
@@ -28,7 +27,6 @@ const validate = (rules) => [
 
 const normalizeEmail = (email = '') => email.trim().toLowerCase();
 
-/* ======================= REGISTER – STEP 1 ======================= */
 
 router.post('/register-request-otp', async (req, res) => {
   try {
@@ -67,7 +65,6 @@ router.post('/register-request-otp', async (req, res) => {
   }
 });
 
-/* ======================= REGISTER – STEP 2 ======================= */
 
 router.post(
   '/register-verify',
@@ -143,7 +140,6 @@ router.post(
   }
 );
 
-/* ============================ LOGIN ============================ */
 
 router.post(
   '/login',
@@ -204,7 +200,6 @@ router.post(
   }
 );
 
-/* =================== FORGOT PASSWORD – STEP 1 =================== */
 
 router.post(
   '/forgot-password-request',
@@ -256,7 +251,6 @@ router.post(
   }
 );
 
-/* =================== FORGOT PASSWORD – STEP 2 =================== */
 
 router.post(
   '/forgot-password-verify',
@@ -314,7 +308,6 @@ router.post(
   }
 );
 
-/* ========================== GOOGLE LOGIN ========================== */
 
 router.post('/google', async (req, res) => {
   try {
@@ -334,7 +327,6 @@ router.post('/google', async (req, res) => {
       });
     }
 
-    // Verify ID token with Google
     const ticket = await googleClient.verifyIdToken({
       idToken: token,
       audience: GOOGLE_CLIENT_ID,
@@ -354,7 +346,6 @@ router.post('/google', async (req, res) => {
       });
     }
 
-    // Find existing user by email or google_id
     const { rows } = await query(
       'SELECT * FROM users WHERE email = $1 OR google_id = $2',
       [email, googleId]

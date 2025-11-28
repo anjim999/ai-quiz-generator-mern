@@ -30,7 +30,6 @@ export default function HistoryTab() {
       setSelectedQuiz(data);
       setOpen(true);
 
-      // fetch only if last result belongs to same quiz
       const saved = JSON.parse(localStorage.getItem("lastResult"));
       setLastResult(saved && saved.quizId === id ? saved : null);
     } catch (err) {

@@ -11,10 +11,8 @@ import auth from "../middleware/auth.js";
 
 const router = Router();
 
-// Public
 router.get("/health", health);
 
-// All quiz actions require login
 router.use(auth);
 
 router.post("/generate_quiz", generateQuiz);

@@ -4,25 +4,16 @@ import { scrapeWikipedia } from "../services/scraper.js";
 import { generateQuizPayload } from "../services/llmQuizGenerator.js";
 import { buildExamPdf } from "../services/pdfGenerator.js";
 
-/** GET /health — TC: O(1), SC: O(1) */
 export function health(_req, res) {
   res.json({ status: "ok" });
 }
 
-/**
- * POST /generate_quiz?count=10
- * body: { url: string, force_refresh?: boolean }
- *
- * SAME as original, but:
- *  - requires logged-in user (req.user.userId)
- *  - quizzes are per user (user_id column)
- */
+
 export async function generateQuiz(req, res, next) {
   try {
     const { url, force_refresh = false } = req.body || {};
     const count = Math.max(1, Math.min(50, parseInt(req.query.count ?? "10", 10)));
 
-    // 🔐 new: must be logged in
     if (!req.user || !req.user.userId) {
       return res.status(401).json({ message: "Unauthorized: no user in request" });
     }
@@ -36,7 +27,6 @@ export async function generateQuiz(req, res, next) {
 
     const useCache = (process.env.ENABLE_URL_CACHE ?? "true").toLowerCase() === "true";
 
-    // 🔐 changed: cache per (url, user_id) instead of global
     const ex = await query(
       "SELECT * FROM quizzes WHERE url=$1 AND user_id=$2 LIMIT 1",
       [url, userId]
@@ -80,7 +70,6 @@ export async function generateQuiz(req, res, next) {
         );
         recordId = ins.rows[0].id;
       } catch (err) {
-        // conflict fallback: find that user's quiz by (url,user_id)
         const row = await query(
           "SELECT id FROM quizzes WHERE url=$1 AND user_id=$2 LIMIT 1",
           [url, userId]
@@ -136,11 +125,7 @@ export async function history(req, res, next) {
   }
 }
 
-/** GET /quiz/:quiz_id — TC: O(1), SC: O(1)
- *
- * SAME as original, but:
- *  - quiz must belong to current user
- */
+
 export async function getQuiz(req, res, next) {
   try {
     if (!req.user || !req.user.userId) {

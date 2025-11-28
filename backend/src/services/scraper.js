@@ -5,9 +5,6 @@ const UA =
   "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
 const MAIN_SELECTOR = "#mw-content-text .mw-parser-output";
 
-/**
- * TC: O(N) DOM traversal; SC: O(N) string building
- */
 export function cleanWikipediaHtml(html) {
   const $ = cheerio.load(html);
   const title = $("#firstHeading").text().trim() || "Untitled";
@@ -37,9 +34,7 @@ export function cleanWikipediaHtml(html) {
   return { title, cleanedHtml: main.html() || "", cleanedText: parts.join("\n") };
 }
 
-/**
- * TC: O(N), SC: O(N)
- */
+
 export async function scrapeWikipedia(url) {
   const resp = await axios.get(url, { headers: { "User-Agent": UA }, timeout: 20000 });
   const raw = resp.data;
