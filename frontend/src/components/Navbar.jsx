@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaUserCircle, FaSignOutAlt } from "react-icons/fa";
-import deepklarityLogo from "../assets/images/deepklarity-logo.png";
+import wikiQuizLogo from "../assets/images/app-logo.jpeg";
 import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
@@ -58,17 +58,17 @@ export default function Navbar() {
       <div className="flex items-center justify-between py-3 px-4 sm:px-6 lg:px-8">
 
         <Link className={`hover:text-blue-600 transition ${active("/")}`} to="/">
-          <div className="flex items-center gap-2">
-            <img
-              src={deepklarityLogo}
-              alt="DeepKlarity Logo"
-              className="w-9 h-9 object-contain drop-shadow-sm"
-            />
-            <span className="font-extrabold text-2xl bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-600 text-transparent bg-clip-text tracking-wide">
-              DeepKlarity AI
-            </span>
-          </div>
-        </Link>
+  <div className="flex items-center gap-2">
+    <img
+      src={wikiQuizLogo}
+      alt="WikiQuiz AI Logo"
+      className="w-9 h-9 object-contain drop-shadow-sm"
+    />
+    <span className="font-extrabold text-2xl bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-600 text-transparent bg-clip-text tracking-wide">
+      WikiQuiz AI
+    </span>
+  </div>
+</Link>
 
         <div className="flex items-center gap-6 sm:gap-8">
           <Link className={`hover:text-blue-600 transition ${active("/")}`} to="/">
