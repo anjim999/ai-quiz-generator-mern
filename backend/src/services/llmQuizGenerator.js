@@ -73,7 +73,6 @@ function getGeminiModel() {
       { retry: false }
     );
   } catch {
-    // Fallback: more stable
     return genAI.getGenerativeModel(
       {
         model: "gemini-2.5-flash-lite",
@@ -157,7 +156,6 @@ Rules:
   try {
     const model = getGeminiModel();
 
-    /* ---------- First generation ---------- */
     const first = await generateWithRetry(model, basePrompt(count));
     const firstText = await first.response.text();
 
