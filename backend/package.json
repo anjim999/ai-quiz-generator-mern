@@ -9,19 +9,22 @@
     "db:init": "node src/db/init.js"
   },
   "dependencies": {
-    "@google/generative-ai": "^0.21.0",
+    "@google/generative-ai": "^0.24.1",
     "axios": "^1.7.7",
     "bcryptjs": "^3.0.3",
     "cheerio": "^1.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",
     "express": "^4.21.1",
+    "express-rate-limit": "^8.2.1",
     "express-validator": "^7.3.1",
     "google-auth-library": "^10.5.0",
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
+    "node-cache": "^5.1.2",
     "nodemailer": "^7.0.11",
+    "openai": "^6.13.0",
     "pdfkit": "^0.15.0",
     "pg": "^8.13.0"
   },
